@@ -1,10 +1,10 @@
 # SocialNetwork
- 
 class SocialNetwork:
     def __init__(self):
         self.graph = {}  
         self.friend_requests = {} 
-        self.user_profiles = {}  
+        self.user_profiles = {} 
+	self.messages = {}
 
     def add_user(self):
         print("\nCreate an account:")
@@ -19,9 +19,10 @@ class SocialNetwork:
             self.graph[user_id] = [] 
             self.friend_requests[user_id] = []  # initialize an empty list for pending friend requests
             self.user_profiles[user_id] = {"password": password, "hobbies": hobbies, "interests": interests}  # store user profile
-            print(f"Account created successfully! Welcome, {user_id}!")
+            self.messages[user_id] = []
+	    print(f"Account created successfully! Welcome, {user_id}!")
         else:
-            print(f"Account with username {user_id} already exists!")
+            print(f"Account with username {user_id} already exists! Please try another one!!")
 
     def login(self):
         print("\nLogin:")
@@ -49,7 +50,7 @@ class SocialNetwork:
             return
 
         if to_user not in self.friend_requests[user_id] and user_id not in self.graph[to_user]:
-            self.friend_requests[to_user].append(user_id)  
+            self.friend_requests[to_user].append(user_id)
             print(f"Friend request sent from {user_id} to {to_user} successfully!")
         else:
             print(f"You have already sent a friend request to {to_user} or are already friends!")
@@ -122,16 +123,51 @@ class SocialNetwork:
         for friend in recommended_friends:
             print(f"{friend[0]} - {friend[1]}")
 
+    def send_message(self,user_id):
+	print("\nSend a message:")
+	to_user = input("Enter the username of the user you want to send a message to: ")
+
+	for uid in self.graph:
+	    if uid.lower() == to_user.lower():
+		to_user = uid
+		break
+	else:
+	    print(f"User {to_user} does not exist or you are not friends!")
+	    return
+	message = input("Enter your message: ")
+
+      if to_user in self.graph[user_id]:
+          if user_id not in self.messages[to_user]:
+              self.messages[to_user].append(user_id)
+          self.messages[to_user].append(message)
+          print(f"Message sent to {to_user} successfully!")
+      else:
+          print(f"You are not friends with {to_user}!")
+
+    def see_messages(self, user_id):
+      print("\nYour messages:")
+      if user_id in self.messages:
+          for sender, message in self.messages[user_id]:
+              print(f"From: {sender}")
+              print(f"Message: {message}")
+              print()
+      else:
+          print("No messages!")
+
+	
+
     def home(self, user_id):
         while True:
             print("\nHome")
-            print("1.Send a friend request")
+            print("1. Send a friend request")
             print("2. Accept a friend request")
             print("3. See friends")
             print("4. See all users")
             print("5. Get friend recommendations")
             print("6. Remove a friend")
-            print("7. Logout")
+            print("7. Send a message")
+	    print("8. See messages you recieved")
+	    print("9. Logout")
             choice = input("Enter your choice: ")
 
             if choice == "1":
@@ -147,7 +183,11 @@ class SocialNetwork:
             elif choice == "6":
                 self.remove_friend(user_id)
             elif choice == "7":
-                break
+		self.send_message(user_id)
+	    elif choice == "8":
+		self.see_messages(user_id)
+	    elif choice == "9"
+		break
             else:
                 print("Invalid choice!")
 
