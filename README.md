@@ -174,23 +174,21 @@ class SocialNetwork:
           message = input("Enter your message: ")
 
           if to_user in self.graph[user_id]:
-              if user_id not in self.messages[to_user]:
-                  self.messages[to_user].append(user_id)
-              self.messages[to_user].append(message)
-              print(f"Message sent to {to_user} successfully!")
+              if user_id not in self.messages:
+                  self.messages[to_user]=[]
+              self.messages[to_user].append(f"From {user_id}: {message}")
+              print(f"Message sent to {to_user} successfully!"}
               return
           else:
-              print(f"You are not friends with {to_user}!")
+              print(f"You are not friends with {to_user}")
               return
 
   def see_messages(self, user_id):
       while True:
           print("\nYour messages:")
           if user_id in self.messages:
-              for sender, message in self.messages[user_id]:
-                  print(f"From: {sender}")
-                  print(f"Message: {message}")
-                  print()
+              for message in self.messages[user_id]:
+                  print(message)
           else:
               print("No messages!")
           print("\nEnter 'back' to go back:")
