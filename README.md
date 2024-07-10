@@ -1,11 +1,37 @@
 #SocialNetwrok
+import json
 class SocialNetwork:
   def __init__(self):
-      self.graph = {}  
-      self.friend_requests = {}  
-      self.user_profiles = {}  
-      self.messages = {}  
-      self.tweets = {} 
+        self.load_data()
+  def load_data(self):
+        try:
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+                self.graph = data.get('graph', {})
+                self.friend_requests = data.get('friend_requests', {})
+                self.user_profiles = data.get('user_profiles', {})
+                self.messages = data.get('messages', {})
+                self.tweets = data.get('tweets', {})
+        except (FileNotFoundError, json.JSONDecodeError, IOError) as e:
+            print(f"Error loading data: {e}")
+            self.graph = {}
+            self.friend_requests = {}
+            self.user_profiles = {}
+            self.messages = {}
+            self.tweets = {}
+  def save_data(self):
+        data = {
+            'graph': self.graph,
+            'friend_requests': self.friend_requests,
+            'user_profiles': self.user_profiles,
+            'messages': self.messages,
+            'tweets': self.tweets
+        }
+        try:
+            with open('data.json', 'w') as f:
+                json.dump(data, f, indent=4)
+        except IOError as e:
+            print(f"Error saving data: {e}")
 
   def add_user(self):
       print("\nCreate an account:")
