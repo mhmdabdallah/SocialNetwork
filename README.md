@@ -178,7 +178,7 @@ class SocialNetwork:
               if user_id not in self.messages:
                   self.messages[to_user]=[]
               self.messages[to_user].append(f"From {user_id}: {message}")
-              print(f"Message sent to {to_user} successfully!"}
+              print(f"Message sent to {to_user} successfully!")
               return
           else:
               print(f"You are not friends with {to_user}")
@@ -226,7 +226,7 @@ class SocialNetwork:
   def home(self, user_id):
       while True:
           print("\nHome")
-          print("1.Send a friend request")
+          print("1. Send a friend request")
           print("2. Accept a friend request")
           print("3. See friends")
           print("4. See all users")
