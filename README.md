@@ -152,39 +152,43 @@ class SocialNetwork:
           choice = input("Enter your choice: ")
           if choice.lower() == 'back':
               return
+  def suggest_friends_bfs(self, user_id):
+        visited = set()
+        queue = [(user_id, 0)]
+        suggested_friends = []
 
-  def recommend_friends(self, user_id):
-      while True:
-          print("\nGet friend recommendations:")
-          user_profile = self.user_profiles[user_id]
-          hobbies = user_profile["hobbies"]
-          interests = user_profile["interests"]
+        while queue:
+            current_user, distance = queue.pop(0)
 
-          similarity_scores = {}
-          for other_user in self.graph:
-              if other_user!= user_id:
-                 other_profile = self.user_profiles[other_user]
-              hobby_similarity = len(set(hobbies) & set(other_profile["hobbies"])) / len(set(hobbies) | set(other_profile["hobbies"]))
-              interest_similarity = len(set(interests) & set(other_profile["interests"])) / len(set(interests) | set(other_profile["interests"]))
-              similarity_score = hobby_similarity + interest_similarity
-              similarity_scores[other_user] = similarity_score
+            if current_user not in visited:
+                visited.add(current_user)
 
-          recommended_friends = []
-          for other_user in sorted(similarity_scores, key=similarity_scores.get, reverse=True)[:5]:
-              other_profile= self.user_profiles[other_user]
-              common_hobbies = set(hobbies) & set(other_profile["hobbies"])
-              common_interests = set(interests) & set(other_profile["interests"])
-              explanation = f"Shared hobbies: {', '.join(common_hobbies)}; Shared interests: {', '.join(common_interests)}"
-              recommended_friends.append((other_user, explanation))
+                if distance == 2:
+                    suggested_friends.extend([friend for friend in self.graph[current_user] if friend not in self.graph[user_id]])
 
-          print("Recommended friends:")
-          for friend in recommended_friends:
-              print(f"{friend[0]} - {friend[1]}")
-          print("\nEnter 'back' to go back:")
-          choice = input("Enter your choice: ")
-          if choice.lower() == 'back':
-              return
+                for friend in self.graph[current_user]:
+                    if friend not in visited:
+                        queue.append((friend, distance + 1))
 
+        return suggested_friends
+
+   def recommend_friends(self, user_id):
+         while True:
+                 print("\nGet friend recommendations:")
+                 suggested_friends = self.suggest_friends_bfs(user_id)
+
+                 if suggested_friends:
+                     print("Friend recommendations:")
+                     for i, friend in enumerate(suggested_friends):
+                         print(f"{i+1}. {friend}")
+                 else:
+                     print("No friend recommendations!")
+    
+                 print("\nEnter 'back' to go back:")
+                 choice = input("Enter your choice: ")
+                 if choice.lower() == 'back':
+                     return
+  
   def send_message(self, user_id):
       while True:
           print("\nSend a message:")
