@@ -65,24 +65,27 @@ class SocialNetwork:
   def accept_friend_request(self, user_id):
       while True:
           print("\nAccept a friend request:")
-          from_user = input("Enter the username of the user who sent you a friend request (or 'back' to go back): ")
-
-          if from_user.lower() == 'back':
-              return
-
-          for uid in self.friend_requests[user_id]:
-              if uid.lower() == from_user.lower():
-                  from_user = uid
-                  break
+          if user_id in self.friend_requests and self.friend_requests[user_id]:
+	     print("Friend requests:" )
+	     for i, from_user in enumerate(self.friend_requests[user_id]):
+		print(f"{i+1}.{from_user}")
+	     choice= input("Enter the number of the friend request you want to accept (or 'back' to fo back): ")
+	     if choice.lower()== 'back'
+		return
+	     try:
+		choice = int(choice)
+		from_user = self.friend_requests[user_id][choice-1]
+		self.graph[user_id].append(from_user)
+		self.graph[from_user].append(user_id)
+         	self.friend_requests[user_id].remove(from_user)  
+                print(f"Friend request from {from_user} accepted successfully!")
+		return
+	     except(ValueError, IndexError):
+		print("invalid choice!")
+	               
           else:
-              print(f"No pending friend request from {from_user}!")
-              continue
-
-          self.graph[user_id].append(from_user) 
-          self.graph[from_user].append(user_id)  
-          self.friend_requests[user_id].remove(from_user)  
-          print(f"Friend request from {from_user} accepted successfully!")
-          return
+              print("No friend Requests!")
+              return
 
   def remove_friend(self, user_id):
       while True:
