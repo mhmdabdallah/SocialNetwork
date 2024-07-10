@@ -5,6 +5,7 @@ class SocialNetwork:
       self.friend_requests = {}  
       self.user_profiles = {}  
       self.messages = {}  
+      self.tweets = {} 
 
   def add_user(self):
       print("\nCreate an account:")
@@ -196,6 +197,32 @@ class SocialNetwork:
           if choice.lower() == 'back':
               return
 
+  def post_tweet(self, user_id):
+        while True:
+            print("\nPost a tweet:")
+            tweet = input("Enter your tweet (or 'back' to go back): ")
+
+            if tweet.lower() == 'back':
+                return
+
+            if user_id not in self.tweets:
+                self.tweets[user_id] = []
+            self.tweets[user_id].append(tweet)
+            print(f"Tweet posted successfully!")
+            return
+
+  def view_tweets(self, user_id):
+        while True:
+            print("\nView tweets:")
+            for user, tweets in self.tweets.items():
+                for tweet in tweets:
+                    print(f"{user}: {tweet}")
+            print("\nEnter 'back' to go back:")
+            choice = input("Enter your choice: ")
+            if choice.lower() == 'back':
+                return
+
+
   def home(self, user_id):
       while True:
           print("\nHome")
@@ -207,7 +234,9 @@ class SocialNetwork:
           print("6. Remove a friend")
           print("7. Send a message")
           print("8. See messages")
-          print("9. Logout")
+          print("9. Post a tweet")
+          print("10. View tweets")
+          print("11. Logout")
           choice = input("Enter your choice: ")
 
           if choice == "1":
@@ -227,6 +256,10 @@ class SocialNetwork:
           elif choice == "8":
               self.see_messages(user_id)
           elif choice == "9":
+              self.post_tweet(user_id)
+          elif choice == "10":
+              self.view_tweets(user_id)
+          elif choice == "11":
               break
           else:
               print("Invalid choice!")
