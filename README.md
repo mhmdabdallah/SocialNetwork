@@ -12,6 +12,8 @@ class SocialNetwork:
                 self.user_profiles = data.get('user_profiles', {})
                 self.messages = data.get('messages', {})
                 self.tweets = data.get('tweets', {})
+                self.likes = data.get('likes', {})
+
         except (FileNotFoundError, json.JSONDecodeError, IOError) as e:
             print(f"Error loading data: {e}")
             self.graph = {}
@@ -19,13 +21,16 @@ class SocialNetwork:
             self.user_profiles = {}
             self.messages = {}
             self.tweets = {}
+            self.likes = {}
+
   def save_data(self):
         data = {
             'graph': self.graph,
             'friend_requests': self.friend_requests,
             'user_profiles': self.user_profiles,
-            'messages': self.messages,
-            'tweets': self.tweets
+            'essages': self.messages,
+            'tweets': self.tweets,
+            'likes': self.likes,
         }
         try:
             with open('data.json', 'w') as f:
@@ -92,23 +97,23 @@ class SocialNetwork:
       while True:
           print("\nAccept a friend request:")
           if user_id in self.friend_requests and self.friend_requests[user_id]:
-	     print("Friend requests:" )
-	     for i, from_user in enumerate(self.friend_requests[user_id]):
-		print(f"{i+1}.{from_user}")
-	     choice= input("Enter the number of the friend request you want to accept (or 'back' to fo back): ")
-	     if choice.lower()== 'back'
-		return
-	     try:
-		choice = int(choice)
-		from_user = self.friend_requests[user_id][choice-1]
-		self.graph[user_id].append(from_user)
-		self.graph[from_user].append(user_id)
-         	self.friend_requests[user_id].remove(from_user)  
+            print("Friend requests:" )
+            for i, from_user in enumerate(self.friend_requests[user_id]):
+             print(f"{i+1}.{from_user}")
+            choice= input("Enter the number of the friend request you want to accept (or 'back' to fo back): ")
+            if choice.lower()== 'back':
+              return
+            try:
+                choice = int(choice)
+                from_user = self.friend_requests[user_id][choice-1]
+                self.graph[user_id].append(from_user)
+                self.graph[from_user].append(user_id)
+                self.friend_requests[user_id].remove(from_user)  
                 print(f"Friend request from {from_user} accepted successfully!")
-		return
-	     except(ValueError, IndexError):
-		print("invalid choice!")
-	               
+                return
+            except(ValueError, IndexError):
+                print("invalid choice!")
+
           else:
               print("No friend Requests!")
               return
@@ -172,7 +177,7 @@ class SocialNetwork:
 
         return suggested_friends
 
-   def recommend_friends(self, user_id):
+  def recommend_friends(self, user_id):
          while True:
                  print("\nGet friend recommendations:")
                  suggested_friends = self.suggest_friends_bfs(user_id)
@@ -183,12 +188,12 @@ class SocialNetwork:
                          print(f"{i+1}. {friend}")
                  else:
                      print("No friend recommendations!")
-    
+
                  print("\nEnter 'back' to go back:")
                  choice = input("Enter your choice: ")
                  if choice.lower() == 'back':
                      return
-   def send_see_message(self, user_id):
+  def send_see_message(self, user_id):
         while True:
             print("\nSend/Receive messages:")
             to_user = input("Enter the username of the user you want to send a message to (or 'back' to go back): ")
@@ -241,6 +246,10 @@ class SocialNetwork:
             if user_id not in self.tweets:
                 self.tweets[user_id] = []
             self.tweets[user_id].append(tweet)
+            if user_id not in self.likes:
+             self.likes[user_id] = {}
+             self.likes[user_id][tweet]={'whistles':0,'eows':0}
+
             print(f"Tweet posted successfully!")
             return
 
@@ -250,11 +259,62 @@ class SocialNetwork:
             for user, tweets in self.tweets.items():
                 for tweet in tweets:
                     print(f"{user}: {tweet}")
-            print("\nEnter 'back' to go back:")
+                    if user in self.likes  and tweet in self.likes[user]:
+
+                        print(f"Whistles: {self.likes[user][tweet]['whistles']}, Meows: {self.likes[user][tweet]['eows']}")
+                    else:
+                         print("No likes or dislikes yet!")
+            print("\nEnter 'back' to go back, or 'like' or 'dislike' to interact with a tweet: ")
             choice = input("Enter your choice: ")
             if choice.lower() == 'back':
                 return
+            elif choice.lower() == 'like':
 
+                tweet_user = input("Enter the username of the tweet you want to like: ")
+
+                tweet_text = input("Enter the text of the tweet you want to like: ")
+
+                if tweet_user in self.tweets and tweet_text in self.tweets[tweet_user]:
+
+                    if tweet_user in self.likes and tweet_text in self.likes[tweet_user]:
+
+                        self.likes[tweet_user][tweet_text]['whistles'] += 1
+
+                    else:
+
+                        self.likes[tweet_user][tweet_text] = {'whistles': 1, 'eows': 0}
+
+                    print(f"You whistled at {tweet_user}'s tweet!")
+
+                else:
+
+                    print(f"Tweet not found!")
+
+            elif choice.lower() == 'dislike':
+
+                tweet_user = input("Enter the username of the tweet you want to dislike: ")
+
+                tweet_text = input("Enter the texbact of the tweet you want to dislike: ")
+
+                if tweet_user in self.tweets and tweet_text in self.tweets[tweet_user]:
+
+                    if tweet_user in self.likes and tweet_text in self.likes[tweet_user]:
+
+                        self.likes[tweet_user][tweet_text]['eows'] += 1
+
+                    else:
+
+                        self.likes[tweet_user][tweet_text] = {'whistles': 0, 'eows': 1}
+
+                    print(f"You meowed at {tweet_user}'s tweet!")
+
+                else:
+
+                    print(f"Tweet not found!")
+
+            else:
+
+                print("Invalid choice!")
 
   def home(self, user_id):
       while True:
@@ -285,7 +345,7 @@ class SocialNetwork:
               self.remove_friend(user_id)
           elif choice == "7":
               self.send_message(user_id)
-	  elif choice == "8":
+          elif choice == "8":
               self.post_tweet(user_id)
           elif choice == "9":
               self.view_tweets(user_id)
