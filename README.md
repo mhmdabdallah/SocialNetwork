@@ -188,47 +188,47 @@ class SocialNetwork:
                  choice = input("Enter your choice: ")
                  if choice.lower() == 'back':
                      return
-  
-  def send_message(self, user_id):
-      while True:
-          print("\nSend a message:")
-          to_user = input("Enter the username of the user you want to send a message to (or 'back' to go back): ")
+   def send_see_message(self, user_id):
+        while True:
+            print("\nSend/Receive messages:")
+            to_user = input("Enter the username of the user you want to send a message to (or 'back' to go back): ")
 
-          if to_user.lower() == 'back':
-              return
+            if to_user.lower() == 'back':
+                return
 
-          for uid in self.graph:
-              if uid.lower() == to_user.lower():
-                  to_user = uid
-                  break
-          else:
-              print(f"User {to_user} does not exist or you are not friends!")
-              continue
+            for uid in self.graph:
+                if uid.lower() == to_user.lower():
+                    to_user = uid
+                    break
+            else:
+                print(f"User {to_user} does not exist or you are not friends!")
+                continue
 
-          message = input("Enter your message: ")
+            if to_user in self.graph[user_id]:
+                while True:
+                    print("\nYour conversation with", to_user)
+                    if user_id in self.messages and to_user in self.messages[user_id]:
+                        for message in self.messages[user_id][to_user]:
+                            print(message)
+                    print("\nEnter '.' to go back:")
+                    message = input("Enter your message: ")
+                    if message.lower() == '.':
+                        break
+                    if user_id not in self.messages:
+                        self.messages[user_id] = {}
+                    if to_user not in self.messages[user_id]:
+                        self.messages[user_id][to_user] = []
+                    self.messages[user_id][to_user].append(f"You: {message}")
+                    if to_user not in self.messages:
+                        self.messages[to_user] = {}
+                    if user_id not in self.messages[to_user]:
+                        self.messages[to_user][user_id] = []
+                    self.messages[to_user][user_id].append(f"From {user_id}: {message}")
+                    print(f"Message sent to {to_user} successfully!")
+            else:
+                print(f"You are not friends with {to_user}")
+                return
 
-          if to_user in self.graph[user_id]:
-              if user_id not in self.messages:
-                  self.messages[to_user]=[]
-              self.messages[to_user].append(f"From {user_id}: {message}")
-              print(f"Message sent to {to_user} successfully!")
-              return
-          else:
-              print(f"You are not friends with {to_user}")
-              return
-
-  def see_messages(self, user_id):
-      while True:
-          print("\nYour messages:")
-          if user_id in self.messages:
-              for message in self.messages[user_id]:
-                  print(message)
-          else:
-              print("No messages!")
-          print("\nEnter 'back' to go back:")
-          choice = input("Enter your choice: ")
-          if choice.lower() == 'back':
-              return
 
   def post_tweet(self, user_id):
         while True:
@@ -265,11 +265,10 @@ class SocialNetwork:
           print("4. See all users")
           print("5. Get friend recommendations")
           print("6. Remove a friend")
-          print("7. Send a message")
-          print("8. See messages")
-          print("9. Post a tweet")
-          print("10. View tweets")
-          print("11. Logout")
+          print("7. Send/see a message")
+          print("8. Post a tweet")
+          print("9. View tweets")
+          print("10. Logout")
           choice = input("Enter your choice: ")
 
           if choice == "1":
@@ -286,13 +285,11 @@ class SocialNetwork:
               self.remove_friend(user_id)
           elif choice == "7":
               self.send_message(user_id)
-          elif choice == "8":
-              self.see_messages(user_id)
-          elif choice == "9":
+	  elif choice == "8":
               self.post_tweet(user_id)
-          elif choice == "10":
+          elif choice == "9":
               self.view_tweets(user_id)
-          elif choice == "11":
+          elif choice == "10":
               break
           else:
               print("Invalid choice!")
