@@ -28,7 +28,7 @@ class SocialNetwork:
             'graph': self.graph,
             'friend_requests': self.friend_requests,
             'user_profiles': self.user_profiles,
-            'essages': self.messages,
+            'messages': self.messages,
             'tweets': self.tweets,
             'likes': self.likes,
         }
