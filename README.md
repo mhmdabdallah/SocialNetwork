@@ -5,10 +5,10 @@ import networkx as nx
 
 class SocialNetwork:
 
-    def __init__(self):
+    def __init__(self):#O(1)
         self.load_data()
 
-    def load_data(self):
+    def load_data(self):#O(1)
         try:
             with open('data.json', 'r') as f:
                 data = json.load(f)
@@ -36,7 +36,7 @@ class SocialNetwork:
             self.tweets = {}
             self.likes = {}
 
-    def save_data(self):
+    def save_data(self):#O(1)
         data = {
             'graph': self.graph,
             'friend_requests': self.friend_requests,
@@ -51,7 +51,7 @@ class SocialNetwork:
         except IOError as e:
             print(f"Error saving data: {e}")
 
-    def add_user(self):
+    def add_user(self):#O(n) it checks if the user_id exist in the graph where we have n users
         print("\nCreate an account:")
         user_id = input("Username: ")
         password = input("Password: ")
@@ -74,7 +74,7 @@ class SocialNetwork:
         else:
             print(f"Account with username {user_id} already exists!")
 
-    def login(self):
+    def login(self):#O(n) it try all the user to find a match
         print("\nLogin:")
         user_id = input("Username: ")
         password = input("Password: ")
@@ -88,7 +88,7 @@ class SocialNetwork:
 
         print("Invalid username or password!")
 
-    def add_friend_request(self, user_id):
+    def add_friend_request(self, user_id):#O(1)
         while True:
             print("\nSend a friend request:")
             to_user = input(
@@ -120,7 +120,7 @@ class SocialNetwork:
                 )
                 return
 
-    def accept_friend_request(self, user_id):
+    def accept_friend_request(self, user_id):#O(n) iterates over all friend requests which have n requests
         while True:
             print("\nAccept a friend request:")
             if user_id in self.friend_requests and self.friend_requests[
@@ -151,7 +151,7 @@ class SocialNetwork:
                 print("No friend Requests!")
                 return
 
-    def remove_friend(self, user_id):
+    def remove_friend(self, user_id):#O(1) checks if friend exist in the graph, constante time
         while True:
             print("\nRemove a friend:")
             friend_to_remove = input(
@@ -171,7 +171,7 @@ class SocialNetwork:
                 print(f"You are not friends with {friend_to_remove}!")
                 return
 
-    def see_friends(self, user_id):
+    def see_friends(self, user_id):#O(n) iterates over all friends which has n friends
         while True:
             print("\nYour friends:")
             for friend in self.graph[user_id]:
@@ -181,7 +181,7 @@ class SocialNetwork:
             if choice.lower() == 'back':
                 return
 
-    def see_all_users(self):
+    def see_all_users(self):#O(n) iterates over all users which has n users
         while True:
             print("\nAll users:")
             for user_id, profile in self.user_profiles.items():
@@ -194,7 +194,7 @@ class SocialNetwork:
             if choice.lower() == 'back':
                 return
 
-    def suggest_friends(self, user_id):
+    def suggest_friends(self, user_id):#O(n^2) iterates over all user profiles to build a graph, and then finds all simple paths of length 2
         suggested_friends = []
         user_profile = self.user_profiles[user_id]
         user_hobbies = set(user_profile['hobbies'])
@@ -228,7 +228,7 @@ class SocialNetwork:
 
         return suggested_friends
 
-    def recommend_friends(self, user_id):
+    def recommend_friends(self, user_id):#O(n^2) calls suggest_friends, which has O(n^2) as big O notation
         while True:
             print("\nGet friend recommendations:")
             suggested_friends = self.suggest_friends(user_id)
@@ -245,7 +245,7 @@ class SocialNetwork:
             if choice.lower() == 'back':
                 return
 
-    def send_see_message(self, user_id):
+    def send_see_message(self, user_id):#O(n) iterates over all the messages where having n messages
         while True:
             print("\nSend/Receive messages:")
             to_user = input(
@@ -292,7 +292,7 @@ class SocialNetwork:
                 print(f"You are not friends with {to_user}")
                 return
 
-    def post_tweet(self, user_id):
+    def post_tweet(self, user_id):#O(1)
         while True:
             print("\nPost a tweet:")
             tweet = input("Enter your tweet (or 'back' to go back): ")
@@ -311,7 +311,7 @@ class SocialNetwork:
             self.save_data()
             return
 
-    def view_tweets(self, user_id):
+    def view_tweets(self, user_id):#O(n) iterates over all tweets which contain n tweets
         while True:
             print("\nView tweets:")
             for user, tweets in self.tweets.items():
@@ -394,7 +394,7 @@ class SocialNetwork:
 
                 print("Invalid choice!")
 
-    def home(self, user_id):
+    def home(self, user_id):#O(1)
         while True:
             print("\nHome")
             print("1. Send a friend request")
@@ -432,7 +432,7 @@ class SocialNetwork:
             else:
                 print("Invalid choice!")
 
-    def run(self):
+    def run(self):#O(1)
         while True:
             print("\nSocial Network App")
             print("1. Create an account")
