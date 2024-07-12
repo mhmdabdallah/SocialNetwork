@@ -13,7 +13,15 @@ class SocialNetwork:
                 self.messages = data.get('messages', {})
                 self.tweets = data.get('tweets', {})
                 self.likes = data.get('likes', {})
-
+	except FileNotFoundError:
+            with open('data.json', 'w') as f:
+                json.dump({}, f)
+            self.graph = {}
+            self.friend_requests = {}
+            self.user_profiles = {}
+            self.messages = {}
+            self.tweets = {}
+            self.likes = {}
         except (FileNotFoundError, json.JSONDecodeError, IOError) as e:
             print(f"Error loading data: {e}")
             self.graph = {}
