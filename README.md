@@ -60,7 +60,8 @@ class SocialNetwork:
           self.friend_requests[user_id] = []  
           self.user_profiles[user_id] = {"password": password, "hobbies": hobbies, "interests": interests} 
           self.messages[user_id] = []
-          print(f"Account created successfully! Welcome, {user_id}!")
+          self.save_data()
+	  print(f"Account created successfully! Welcome, {user_id}!")
       else:
           print(f"Account with username {user_id} already exists!")
 
@@ -96,6 +97,7 @@ class SocialNetwork:
           if to_user not in self.friend_requests[user_id] and user_id not in self.graph[to_user]:
               self.friend_requests[to_user].append(user_id)
               print(f"Friend request sent from {user_id} to {to_user} successfully!")
+	      self.save_data()
               return
           else:
               print(f"You have already sent a friend request to {to_user} or are already friends!")
@@ -118,6 +120,7 @@ class SocialNetwork:
                 self.graph[from_user].append(user_id)
                 self.friend_requests[user_id].remove(from_user)  
                 print(f"Friend request from {from_user} accepted successfully!")
+                self.save_data()
                 return
             except(ValueError, IndexError):
                 print("invalid choice!")
@@ -138,6 +141,7 @@ class SocialNetwork:
               self.graph[user_id].remove(friend_to_remove)  
               self.graph[friend_to_remove].remove(user_id)  
               print(f"Friend {friend_to_remove} removed successfully!")
+	      self.save_data()
               return
           else:
               print(f"You are not friends with {friend_to_remove}!")
@@ -238,6 +242,7 @@ class SocialNetwork:
                         self.messages[to_user][user_id] = []
                     self.messages[to_user][user_id].append(f"From {user_id}: {message}")
                     print(f"Message sent to {to_user} successfully!")
+		    self.save_data()
             else:
                 print(f"You are not friends with {to_user}")
                 return
@@ -259,6 +264,7 @@ class SocialNetwork:
              self.likes[user_id][tweet]={'whistles':0,'eows':0}
 
             print(f"Tweet posted successfully!")
+	    self.save_data()
             return
 
   def view_tweets(self, user_id):
@@ -293,6 +299,7 @@ class SocialNetwork:
                         self.likes[tweet_user][tweet_text] = {'whistles': 1, 'eows': 0}
 
                     print(f"You whistled at {tweet_user}'s tweet!")
+                    self.save_data()
 
                 else:
 
@@ -315,7 +322,7 @@ class SocialNetwork:
                         self.likes[tweet_user][tweet_text] = {'whistles': 0, 'eows': 1}
 
                     print(f"You meowed at {tweet_user}'s tweet!")
-
+                    self.save_data()
                 else:
 
                     print(f"Tweet not found!")
@@ -352,7 +359,7 @@ class SocialNetwork:
           elif choice == "6":
               self.remove_friend(user_id)
           elif choice == "7":
-              self.send_message(user_id)
+              self.send_see_message(user_id)
           elif choice == "8":
               self.post_tweet(user_id)
           elif choice == "9":
