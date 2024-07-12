@@ -393,6 +393,86 @@ class SocialNetwork:
             else:
 
                 print("Invalid choice!")
+    def edit_profile(self, user_id):#O(n) iterates over the hobbies and the interest
+        while True:
+            print("\nEdit profile:")
+            print("1. Edit hobbies")
+            print("2. Edit interests")
+            print("3. Change password")
+            print("4. Back")
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                hobbies = input("Enter your new hobbies (comma-separated): ").split(',')
+                hobbies = [hobby.strip() for hobby in hobbies]
+                self.user_profiles[user_id]["hobbies"] = hobbies
+                print("Hobbies updated successfully!")
+                self.save_data()
+            elif choice == "2":
+                interests = input("Enter your new interests (comma-separated): ").split(',')
+                interests = [interest.strip() for interest in interests]
+                self.user_profiles[user_id]["interests"] = interests
+                print("Interests updated successfully!")
+                self.save_data()
+            elif choice == "3":
+                old_password = input("Enter your old password: ")
+                if self.user_profiles[user_id]["password"] == old_password:
+                    new_password = input("Enter your new password: ")
+                    self.user_profiles[user_id]["password"] = new_password
+                    print("Password changed successfully!")
+                    self.save_data()
+                else:
+                    print("Invalid old password!")
+            elif choice == "4":
+                break
+            else:
+                print("Invalid choice!")
+    def manage_blocks(self, user_id):#O(m+n) where m in the number of users and n is he number of blocked users
+        while True:
+            print("\nManage blocks:")
+            print("1. Block a user")
+            print("2. Unblock a user")
+            print("3. Back")
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                to_block = input("Enter the username of the user you want to block (or 'back' to go back): ")
+
+                if to_block.lower() == 'back':
+                    continue
+
+                for uid in self.user_profiles:
+                    if uid.lower() == to_block.lower():
+                        to_block = uid
+                        break
+                else:
+                    print(f"User {to_block} does not exist!")
+                    continue
+
+                if to_block not in self.graph[user_id]:
+                    self.graph[user_id].append(to_block)
+                    print(f"User {to_block} blocked successfully!")
+                    self.save_data()
+                else:
+                    print(f"You have already blocked {to_block}!")
+            elif choice == "2":
+                to_unblock = input("Enter the username of the user you want to unblock (or 'back' to go back): ")
+
+                if to_unblock.lower() == 'back':
+                    continue
+
+                for uid in self.graph[user_id]:
+                    if uid.lower() == to_unblock.lower():
+                        self.graph[user_id].remove(uid)
+                        print(f"User {to_unblock} unblocked successfully!")
+                        self.save_data()
+                        break
+                else:
+                    print(f"You have not blocked {to_unblock}!")
+            elif choice == "3":
+                break
+            else:
+                print("Invalid choice!")
 
     def home(self, user_id):#O(1)
         while True:
