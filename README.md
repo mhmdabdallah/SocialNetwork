@@ -315,7 +315,8 @@ class SocialNetwork:
         while True:
             print("\nView tweets:")
             for user, tweets in self.tweets.items():
-                for tweet in tweets:
+		if user not in self.graph[user_id]:
+                 for tweet in tweets:
                     print(f"{user}: {tweet}")
                     if user in self.likes and tweet in self.likes[user]:
 
@@ -486,7 +487,9 @@ class SocialNetwork:
             print("7. Send/see a message")
             print("8. Post a tweet")
             print("9. View tweets")
-            print("10. Logout")
+            print("10. Edit you profile")
+            print("11. block management")
+            print("12. logout")
             choice = input("Enter your choice: ")
 
             if choice == "1":
@@ -508,6 +511,10 @@ class SocialNetwork:
             elif choice == "9":
                 self.view_tweets(user_id)
             elif choice == "10":
+                self.edit_profile(user_id)
+            elif choice == "9":
+                self.manage_blocks(user_id)
+            elif choice == "12":
                 break
             else:
                 print("Invalid choice!")
