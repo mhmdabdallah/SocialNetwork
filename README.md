@@ -512,7 +512,7 @@ class SocialNetwork:
                 self.view_tweets(user_id)
             elif choice == "10":
                 self.edit_profile(user_id)
-            elif choice == "9":
+            elif choice == "11":
                 self.manage_blocks(user_id)
             elif choice == "12":
                 break
