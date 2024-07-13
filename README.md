@@ -194,39 +194,23 @@ class SocialNetwork:
             if choice.lower() == 'back':
                 return
 
-    def suggest_friends(self, user_id):#O(n^2) iterates over all user profiles to build a graph, and then finds all simple paths of length 2
+    def suggest_friends(self, user_id):#O(n^2) iterates over all user profiles to build a graph, and then finds all simple paths of length 2 (hobbies and interest)
         suggested_friends = []
         user_profile = self.user_profiles[user_id]
         user_hobbies = set(user_profile['hobbies'])
         user_interests = set(user_profile['interests'])
 
-        G = nx.Graph()
-        G.add_nodes_from(self.user_profiles)
-
-        for user1, profile1 in self.user_profiles.items():
-            for user2, profile2 in self.user_profiles.items():
-                if user1 != user2 and user1 not in self.graph[
-                        user2] and user2 not in self.graph[user1]:
-                    hobbies_intersection = user_hobbies & set(
-                        profile2['hobbies'])
-                    interests_intersection = user_interests & set(
-                        profile2['interests'])
-                    G.add_edge(user1,
-                               user2,
-                               weight=len(hobbies_intersection) +
-                               len(interests_intersection))
-
-        for node in G.nodes:
-            if node != user_id:
-                for path in nx.all_simple_paths(G, user_id, node):
-                    if len(path) == 2:
-                        hobbies_reason = ', '.join(hobbies_intersection)
-                        interests_reason = ', '.join(interests_intersection)
-                        reason = f"Shared hobbies: {hobbies_reason}, Shared interests: {interests_reason}"
-                        suggested_friends.append((node, reason))
-                        break
+        for other_user_id, other_profile in self.user_profiles.items():
+            if other_user_id!= user_id and other_user_id not in self.graph[user_id]:
+                common_hobbies = list(user_hobbies & set(other_profile['hobbies']))
+                common_interests = list(user_interests & set(other_profile['interests']))
+                if common_hobbies or common_interests:
+                    reason = f"Shared hobbies: {', '.join(common_hobbies)}" if common_hobbies else ""
+                    reason += f", Shared interests: {', '.join(common_interests)}" if common_interests else ""
+                    suggested_friends.append((other_user_id, reason))
 
         return suggested_friends
+        
 
     def recommend_friends(self, user_id):#O(n^2) calls suggest_friends, which has O(n^2) as big O notation
         while True:
